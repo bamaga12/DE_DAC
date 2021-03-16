@@ -1,7 +1,7 @@
 import org.apache.spark.sql.{SQLContext, SparkSession}
 import org.apache.spark.sql.functions._
 
-object Main {
+object Bai1 {
   val spark = SparkSession.builder().master("local[1]").appName("SparkPractice").getOrCreate();
   import spark.implicits._
   val sqlContext: SQLContext = spark.sqlContext

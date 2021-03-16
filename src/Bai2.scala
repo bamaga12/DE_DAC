@@ -2,7 +2,7 @@ import org.apache.spark.sql.{SQLContext, SparkSession}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.{ArrayType, DataType, DataTypes}
 
-object Main {
+object Bai2 {
   val spark = SparkSession.builder().master("local[1]").appName("SparkPractice").getOrCreate();
   import spark.implicits._
   val sqlContext: SQLContext = spark.sqlContext
@@ -25,9 +25,10 @@ object Main {
       (102,4,78,18)).toDF("id", "day", "price", "units")
 
     val data1 = data.withColumn("price_1", lit("price_"))
-      .withColumn("price_2", concat($"price_1",$"day"))
-      .withColumn("unit_1", lit("unit_"))
-      .withColumn("unit_2", concat($"unit_1",$"day"))
+                    .withColumn("price_2", concat($"price_1",$"day"))
+                    .withColumn("unit_1", lit("unit_"))
+                    .withColumn("unit_2", concat($"unit_1",$"day"))
+
     val pivotPrice = data1.groupBy("id").pivot("price_2").agg(first("price").as("price"))
     val pivotUnits = data1.groupBy("id").pivot("unit_2").agg(first("units"))
     val result = pivotPrice.join(pivotUnits, Seq("id")).orderBy("id")
