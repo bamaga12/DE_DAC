@@ -1,7 +1,8 @@
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 
-object main {
+object exercise_week_2 {
+
   def main(args: Array[String]): Unit = {
     // create spark session
     val spark = SparkSession
