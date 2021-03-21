@@ -1,9 +1,10 @@
 package main.scala
 
+import org.apache.spark.sql.expressions.Window
 import org.apache.spark.sql.{Row, SQLContext, SparkSession}
 import org.apache.spark.sql.functions._
 
-object practice_4 {
+object week_3_exercise {
   val spark: SparkSession = SparkSession.builder()
     .master("local[*]")
     .appName("practice spark")
@@ -14,30 +15,33 @@ object practice_4 {
   spark.sparkContext.setLogLevel("ERROR")
 
   def main(args: Array[String]): Unit = {
-    val data = Seq(
-      (100, 1, 23, 10),
-      (100, 2, 45, 11),
-      (100, 3, 67, 12),
-      (100, 4, 78, 13),
-      (101, 1, 23, 10),
-      (101, 2, 45, 13),
-      (101, 3, 67, 14),
-      (101, 4, 78, 15),
-      (102, 1, 23, 10),
-      (102, 2, 45, 11),
-      (102, 3, 67, 16),
-      (102, 4, 78, 18)).toDF("id", "day", "price", "units")
-    data.show()
-    val pricePivoted = data.groupBy("id")
-      .pivot("day")
-      .sum("price")
-    val pricePivotedRename = pricePivoted.select(pricePivoted.columns.map(i => if (i != "id") col(i).as("price_" + i) else col(i)): _*)
-    val unitsPivoted = data.groupBy("id")
-      .pivot("day")
-      .agg(sum("units"))
-    val unitsPivotedRename = unitsPivoted.select(unitsPivoted.columns.map(i => if (i != "id") col(i).as("unit_" + i) else col(i)): _*)
-    val solution = pricePivotedRename.as("p").join(unitsPivotedRename.as("u"), Seq("id"), "inner")
-      .select("p.*", "u.*").orderBy($"id".asc)
-    solution.show()
+    // Exercise 1
+    val dates = Seq(
+      "08/11/2015",
+      "09/11/2015",
+      "09/12/2015").toDF("date_string")
+    val solution_1 = dates.withColumn("to_date", to_date(col("date_string"), "MM/dd/yyyy"))
+      .withColumn("diff", datediff(col("to_date"), current_date()))
+    solution_1.show()
+
+    // Exercise 2
+    val words = Seq(Array("hello", "world")).toDF("words")
+    words.show
+    val solution_2 = words.withColumn("solution", concat_ws(" ", col("words")))
+    solution_2.show()
+
+    // Exercise 3
+    val salaries = spark
+      .read
+      .option("header", true)
+      .option("inferSchema", true)
+      .csv("resource/salaries.csv")
+    salaries.show()
+    val bySalary = Window.orderBy(col("Salary").desc)
+    val solution_3 = salaries.withColumn("Percentage", percent_rank() over bySalary)
+      .withColumn("Percentage", when(col("Percentage") <= 0.3, "High").
+        when(col("Percentage") > 0.3 && col("Percentage") <= 0.7, "Average").
+        otherwise("Low"))
+    solution_3.show()
   }
 }
