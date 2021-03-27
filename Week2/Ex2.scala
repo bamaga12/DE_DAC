@@ -1,8 +1,9 @@
-package Week2.Ex2
+package Week2
 
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.functions._
-object Main {
+import org.apache.spark.sql.functions.first
+
+object Ex2 {
   def main(args: Array[String]): Unit = {
     val spark = SparkSession.builder()
       .appName("Exercise_1")

@@ -1,9 +1,9 @@
-package Week2.Ex1
+package Week2
 
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.functions.{col, max, min}
+import org.apache.spark.sql.functions._
 
-object Main {
+object Ex1 {
   def main(args: Array[String]): Unit = {
     val spark = SparkSession.builder()
       .appName("Exercise_1")
