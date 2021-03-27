@@ -1,8 +1,7 @@
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.functions._
+import org.apache.spark.sql.functions.{asc, col, max, min}
 
-object exercise_week_2 {
-
+object Week_2_Exercise_2 {
   def main(args: Array[String]): Unit = {
     // create spark session
     val spark = SparkSession
@@ -13,14 +12,6 @@ object exercise_week_2 {
 
     spark.sparkContext.setLogLevel("WARN")
     import spark.implicits._
-
-
-    //Exercise 1
-    val nums = spark.range(5).withColumn("group", 'id % 2)
-    val result_1 = nums.groupBy("group").agg(
-      max(col("id")).alias("max_id"),
-      min(col("id")).alias("min_id")
-    ).orderBy(asc("group"))
 
     spark.range(5).withColumn("group", 'id % 2)
     // Exercise 2
@@ -38,7 +29,7 @@ object exercise_week_2 {
       (102,3,67,16),
       (102,4,78,18)).toDF("id", "day", "price", "units")
 
-   val pivot_df_1 = data
+    val pivot_df_1 = data
       .groupBy("id")
       .pivot(col("day"))
       .avg("price")
@@ -52,9 +43,6 @@ object exercise_week_2 {
     val pivot_df_2_rename = pivot_df_2.select(pivot_df_2.columns.map(c => if(c == "id") col(c) else col(c).alias("units_"+c)): _*)
     val result2 = pivot_df_1_rename.join(pivot_df_2_rename,Seq("id"),"inner").orderBy(asc("id"))
 
-    result_1.show(false)
-
     result2.show(false)
-
   }
 }
