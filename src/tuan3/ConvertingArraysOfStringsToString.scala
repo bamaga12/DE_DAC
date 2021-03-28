@@ -1,3 +1,6 @@
+// spark 2.4.7
+// scala 2.12.13
+
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions.{col, concat_ws}
 
