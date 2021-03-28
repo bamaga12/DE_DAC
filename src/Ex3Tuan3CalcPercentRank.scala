@@ -13,8 +13,8 @@ object Ex3Tuan3CalcPercentRank {
     val salaries = spark.read.json("src/resources/salaries.json");
 
     val result = salaries.withColumn("Percentage", percent_rank over Window.orderBy($"Salary".desc))
-            .withColumn("Percentage", when($"Percentage" < 0.4, "High")
-                                              .when($"Percentage" > 0.5, "Low")
+            .withColumn("Percentage", when($"Percentage" <= 0.3, "High")
+                                              .when($"Percentage" >= 0.7, "Low")
                                               .otherwise("Average"));
     result.show();
 
