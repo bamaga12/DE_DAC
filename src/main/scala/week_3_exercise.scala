@@ -21,7 +21,7 @@ object week_3_exercise {
       "09/11/2015",
       "09/12/2015").toDF("date_string")
     val solution_1 = dates.withColumn("to_date", to_date(col("date_string"), "MM/dd/yyyy"))
-      .withColumn("diff", datediff(col("to_date"), current_date()))
+      .withColumn("diff", datediff(current_date(), col("to_date")))
     solution_1.show()
 
     // Exercise 2
